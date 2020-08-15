@@ -119,10 +119,14 @@ countyData = pd.read_csv('countyData.csv')
 
 for county in counties:
     countysData = countyData[countyData['county_name'].str.contains(county)]
+    countysData['SMA_3'] = countysData.iloc[:,3].rolling(window=3).mean()
     y = countysData['new']
+    y2 = countysData['SMA_3']
     x = countysData['date']
-    plt.scatter(x,y,label=county)
+    plt.scatter(x,y,label='Daily Cases')
+    plt.plot(x,y2, label='3-day MA')
     plt.title(county)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.show()
     
     
