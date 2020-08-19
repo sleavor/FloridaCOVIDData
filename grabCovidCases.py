@@ -125,83 +125,14 @@ countyData = pd.read_csv('countyData.csv')
 for county in counties:
     countysData = countyData[countyData['county_name'].str.contains(county)]
     countysData['SMA_3'] = countysData.iloc[:,3].rolling(window=3).mean()
+    countysData['SMA_7'] = countysData.iloc[:,3].rolling(window=7).mean()
     y = countysData['new']
     y2 = countysData['SMA_3']
+    y3 = countysData['SMA_7']
     x = countysData['date']
     plt.scatter(x,y,label='Daily Cases')
     plt.plot(x,y2, label='3-day MA')
+    plt.plot(x,y3, label='7-day MA', color='red')
     plt.title(county)
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.show()
-
-#Plot on state map
-#Plot on state map
-init_notebook_mode()
-
-florida_data_url = 'https://raw.githubusercontent.com/plotly/datasets/master/florida_county_data.geojson'
-florida_data = pd.read_json(florida_data_url)
-
-county_list = []
-counties_aligned = []
-
-for county in florida_data['features']:
-    county_list.append(county)
-    counties_aligned.append(county['properties']['name'][0:-11])
-
-growCounties = {"type": "FeatureCollection"}
-growCounties['features'] = []
-
-fallCounties = {"type": "FeatureCollection"}
-fallCounties['features'] = []
-
-neutralCounties={"type": "FeatureCollection"}
-neutralCounties['features'] = []
-
-for i in range(len(county_list)):
-    countysData = countyData[countyData['county_name'].str.contains(counties_aligned[i])]
-    countysData['SMA_3'] = countysData.iloc[:,3].rolling(window=3).mean()
-    s=countysData['SMA_3']
-    if s.iloc[-1]>s.iloc[-3]:
-        growCounties['features'].append(florida_data['features'][i])
-    elif s.iloc[-1]<s.iloc[-4]:
-        fallCounties['features'].append(florida_data['features'][i])
-    else:
-        neutralCounties['features'].append(florida_data['features'][i])
-        
-
-mapbox_access_token = "pk.eyJ1Ijoic2xlYXZvciIsImEiOiJja2R2enQyb2swcXlkMndub252MmNiamxqIn0.BMf_fuTYk-97vdtYNd0j0A"
-
-data = go.Scattermapbox(
-        lat=['45.5017'],
-        lon=['-73.5673'],
-        mode='markers',
-    )
-
-layout = go.Layout(
-    height=600,
-    autosize=True,
-    hovermode='closest',
-    mapbox=dict(
-        layers=[
-            dict(
-                sourcetype = 'geojson',
-                source = growCounties,
-                type = 'fill',
-                color = 'rgba(163,22,19,0.8)'
-            )
-        ],
-        accesstoken=mapbox_access_token,
-        bearing=0,
-        center=dict(
-            lat=27.8,
-            lon=-83
-        ),
-        pitch=0,
-        zoom=5.2,
-        style='light'
-    ),
-)
-
-fig = dict(data=data, layout=layout)
-iplot(fig, filename='county-level-choropleths-python')
-
