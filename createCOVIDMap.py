@@ -91,7 +91,7 @@ counties = ['Alachua',
 state = 'FL'
 date = datetime.date.today().strftime('%Y/%m/%d')
     
-countyData = pd.read_csv('C:\\Users\\Shawn Leavor\\Documents\\Python Scripts\\CovidByCounty\\countyData.csv')
+countyData = pd.read_csv('countyData.csv')
 
 #Plot on state map
 #Plot on state map
