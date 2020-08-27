@@ -120,7 +120,7 @@ for i in range(len(county_list)):
     countysData = countyData[countyData['county_name'].str.contains(counties_aligned[i])]
     countysData['SMA_3'] = countysData.iloc[:,3].rolling(window=3).mean()
     s=countysData['SMA_3']
-    if s.iloc[-1]>s.iloc[-3]:
+    if s.iloc[-1]>s.iloc[-4]:
         growCounties['features'].append(florida_data['features'][i])
     elif s.iloc[-1]<s.iloc[-4]:
         fallCounties['features'].append(florida_data['features'][i])

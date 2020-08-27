@@ -126,13 +126,16 @@ for county in counties:
     countysData = countyData[countyData['county_name'].str.contains(county)]
     countysData['SMA_3'] = countysData.iloc[:,3].rolling(window=3).mean()
     countysData['SMA_7'] = countysData.iloc[:,3].rolling(window=7).mean()
+    countysData['SMA_14'] = countysData.iloc[:,3].rolling(window=14).mean()
     y = countysData['new']
     y2 = countysData['SMA_3']
     y3 = countysData['SMA_7']
-    x = countysData['date']
-    plt.scatter(x,y,label='Daily Cases')
+    y4 = countysData['SMA_14']
+    x = pd.to_datetime(countysData['date'], infer_datetime_format=True)
+    plt.plot_date(x,y,label='Daily Cases')
     plt.plot(x,y2, label='3-day MA')
     plt.plot(x,y3, label='7-day MA', color='red')
+    plt.plot(x,y4, label='14-day MA', color='black')
     plt.title(county)
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.show()
